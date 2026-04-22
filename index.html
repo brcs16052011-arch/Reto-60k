@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Oficial Reto 60K</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif; background: #0d1b3e; color: white; display: flex; justify-content: center; }
+        .container { max-width: 500px; width: 100%; background: #162447; padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        h2 { text-align: center; color: #00d4ff; text-transform: uppercase; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #00d4ff; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1f4068; background: #0a1128; color: white; box-sizing: border-box; margin-bottom: 5px; }
+        .talla-section { background: #1b2a4e; padding: 15px; border-radius: 8px; margin-top: 10px; display: none; border-left: 4px solid #e94560; }
+        button { width: 100%; padding: 18px; background: #e94560; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 25px; font-size: 1.1rem; transition: 0.3s; }
+        button:hover { background: #ff4d6d; }
+        button:disabled { background: #555; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registro Oficial Reto 60K</h2>
+    <form id="registroForm">
+        <label>Nombre Completo</label>
+        <input type="text" name="nombre" placeholder="Nombre y apellidos" required>
+
+        <label>Grupo Ciclista</label>
+        <input type="text" name="grupo_ciclista" placeholder="Nombre de tu equipo" required>
+
+        <label>Lugar de Procedencia</label>
+        <input type="text" name="procedencia" placeholder="Ciudad o Estado" required>
+
+        <label>WhatsApp</label>
+        <input type="tel" name="whatsapp" placeholder="Ej: +52 1234567890" required>
+
+        <label>Selecciona tu Paquete</label>
+        <select name="paquete" id="paqueteSelect" required onchange="actualizarTallas()">
+            <option value="">-- Selecciona Paquete --</option>
+            <option value="1">Paquete 1 (Jersey)</option>
+            <option value="2">Paquete 2 (Rompevientos)</option>
+            <option value="3">Paquete 3 (Sin Tallas)</option>
+            <option value="4">Paquete 4 (Jersey)</option>
+            <option value="5">Paquete 5 (Jersey + Rompevientos)</option>
+            <option value="5+">Paquete 5+ (Jersey + Rompevientos + Chaleco)</option>
+            <option value="6">Paquete 6 (Chaleco)</option>
+        </select>
+
+        <div id="seccionJersey" class="talla-section">
+            <label>Talla de Jersey</label>
+            <select name="talla_jersey" id="talla_jersey"></select>
+        </div>
+
+        <div id="seccionRompevientos" class="talla-section">
+            <label>Talla de Rompevientos</label>
+            <select name="talla_rompevientos" id="talla_rompevientos"></select>
+        </div>
+
+        <div id="seccionChaleco" class="talla-section">
+            <label>Talla de Chaleco</label>
+            <select name="talla_chaleco" id="talla_chaleco"></select>
+        </div>
+
+        <label>Foto para FB</label>
+        <input type="file" id="f_fb" accept="image/*" required>
+
+        <label>Comprobante de Pago</label>
+        <input type="file" id="f_pago" accept="image/*" required>
+
+        <button type="submit" id="btnEnviar">FINALIZAR REGISTRO</button>
+    </form>
+</div>
+
+<script>
+    // --- USA TU ÚLTIMA URL DE IMPLEMENTACIÓN AQUÍ ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx1J6f9VpRf92dgofTuDkQdDe8hBX6mdM_lVN4C6XxtMSZsDHwOsrjboV9Wr8yl0UZr/exec';
+    
+    // Tallas completas de XS a 6XL
+    const tallas = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"];
+
+    function poblarTallas(id) {
+        const select = document.getElementById(id);
+        if(!select) return;
+        select.innerHTML = '<option value="N/A">-- Selecciona Talla --</option>';
+        tallas.forEach(t => {
+            let opt = document.createElement('option');
+            opt.value = t; opt.innerHTML = t;
+            select.appendChild(opt);
+        });
+    }
+
+    poblarTallas('talla_jersey');
+    poblarTallas('talla_rompevientos');
+    poblarTallas('talla_chaleco');
+
+    function actualizarTallas() {
+        const p = document.getElementById('paqueteSelect').value;
+        const secciones = ['seccionJersey', 'seccionRompevientos', 'seccionChaleco'];
+        secciones.forEach(s => document.getElementById(s).style.display = 'none');
+
+        if(p === "1" || p === "4") {
+            document.getElementById('seccionJersey').style.display = 'block';
+        } else if(p === "2") {
+            document.getElementById('seccionRompevientos').style.display = 'block';
+        } else if(p === "5") {
+            document.getElementById('seccionJersey').style.display = 'block';
+            document.getElementById('seccionRompevientos').style.display = 'block';
+        } else if(p === "5+") {
+            document.getElementById('seccionJersey').style.display = 'block';
+            document.getElementById('seccionRompevientos').style.display = 'block';
+            document.getElementById('seccionChaleco').style.display = 'block';
+        } else if(p === "6") {
+            document.getElementById('seccionChaleco').style.display = 'block';
+        }
+    }
+
+    const toBase64 = file => new Promise((resolve) => {
+        if (!file) { resolve(""); return; }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => resolve("");
+    });
+
+    const form = document.getElementById('registroForm');
+    
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnEnviar');
+        btn.disabled = true;
+        btn.innerText = "SUBIENDO DATOS Y FOTOS...";
+
+        try {
+            const formData = new FormData(form);
+            const data = new URLSearchParams();
+
+            // Campos de texto
+            formData.forEach((value, key) => {
+                if (!(value instanceof File)) data.append(key, value);
+            });
+
+            // Procesar fotos a Base64
+            const img1 = document.getElementById('f_fb').files[0];
+            const img2 = document.getElementById('f_pago').files[0];
+
+            data.append("foto_fb_base64", img1 ? await toBase64(img1) : "");
+            data.append("comprobante_base64", img2 ? await toBase64(img2) : "");
+
+            // Envío
+            await fetch(scriptURL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: data 
+            });
+
+            alert("¡REGISTRO EXITOSO!\nDatos y fotos guardados correctamente.");
+            form.reset();
+            actualizarTallas();
+
+        } catch (error) {
+            alert("Error de conexión. Intenta con fotos menos pesadas.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "FINALIZAR REGISTRO";
+        }
+    });
+</script>
+</body>
+</html>
