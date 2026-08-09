@@ -8,78 +8,107 @@
         body { 
             margin: 0; 
             padding: 20px; 
-            font-family: 'Segoe UI', sans-serif; 
-            background: #2b080c; 
-            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #2b0d19 0%, #15050c 100%); 
+            color: #fce4ec; 
             display: flex; 
             justify-content: center; 
+            min-height: 100vh;
+            align-items: center;
         }
         .container { 
             max-width: 500px; 
             width: 100%; 
-            background: #4a0e17; 
-            padding: 25px; 
-            border-radius: 15px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
-            border: 1px solid #d4af37; 
+            background: #3d1424; 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); 
+            border: 1px solid #d4af37;
         }
         h2 { 
             text-align: center; 
-            color: #d4af37; 
+            color: #ffd700; 
             text-transform: uppercase; 
-            margin-bottom: 20px; 
+            margin-bottom: 25px; 
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.6rem;
         }
         label { 
             display: block; 
             margin-top: 15px; 
-            margin-bottom: 5px; 
-            font-weight: bold; 
+            margin-bottom: 6px; 
+            font-weight: 600; 
             color: #f3e5ab; 
+            font-size: 0.95rem;
         }
         input, select { 
             width: 100%; 
             padding: 12px; 
             border-radius: 8px; 
             border: 1px solid #d4af37; 
-            background: #2b080c; 
-            color: white; 
+            background: #250914; 
+            color: #ffffff; 
             box-sizing: border-box; 
             margin-bottom: 5px; 
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
         }
         input:focus, select:focus {
-            outline: none;
             border-color: #ffd700;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+        input[type="file"] {
+            background: #250914;
+            color: #f3e5ab;
+            cursor: pointer;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background: #d4af37;
+            color: #2b0d19;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
         }
         .talla-section { 
-            background: #360a10; 
+            background: #4a192c; 
             padding: 15px; 
             border-radius: 8px; 
-            margin-top: 10px; 
+            margin-top: 12px; 
             display: none; 
-            border-left: 4px solid #d4af37; 
+            border-left: 4px solid #ffd700; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
         button { 
             width: 100%; 
-            padding: 18px; 
-            background: #d4af37; 
-            color: #2b080c; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%); 
+            color: #1a050d; 
             border: none; 
             border-radius: 8px; 
             font-weight: bold; 
             cursor: pointer; 
-            margin-top: 25px; 
+            margin-top: 30px; 
             font-size: 1.1rem; 
-            transition: 0.3s; 
+            letter-spacing: 1px;
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
         button:hover { 
-            background: #ffd700; 
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, #ffd700 0%, #c59b27 100%); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
         }
         button:disabled { 
-            background: #666; 
-            color: #ccc;
+            background: #555555; 
+            color: #888888;
             cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -120,23 +149,19 @@
             <select name="talla_rompevientos" id="talla_rompevientos"></select>
         </div>
 
-        <div id="seccionChaleco" class="talla-section">
-            <label>Talla de Chaleco (XS a 6XL)</label>
-            <select name="talla_chaleco" id="talla_chaleco"></select>
-        </div>
-
         <label>Foto para FB</label>
-        <input type="file" id="f_fb" name="foto_fb" accept="image/*" required>
+        <input type="file" name="foto_fb" id="foto_fb" accept="image/*" required>
 
         <label>Comprobante de Pago</label>
-        <input type="file" id="f_pago" name="comprobante" accept="image/*" required>
+        <input type="file" name="comprobante" id="comprobante" accept="image/*" required>
 
         <button type="submit" id="btnEnviar">FINALIZAR REGISTRO</button>
     </form>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbydqWl7jhtVNYaOQwNUyG0Pa91P2KbOAK8GUeI3gVWoC--6zYFjEg7CmlyooggWq6gq-w/exec';
+    // URL de Apps Script actualizada
+    const scriptURL = 'Https://script.google.com/macros/s/AKfycby3hJO1_hKlV-9xET57nbillD0FEkNq_P2p6FvN7MXl0BE8EGy6-KxXc51vpeavbT1RfA/exec'; 
     
     const tallas = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"];
 
@@ -145,20 +170,19 @@
         select.innerHTML = '<option value="N/A">-- Selecciona Talla --</option>';
         tallas.forEach(t => {
             let opt = document.createElement('option');
-            opt.value = t; opt.innerHTML = t;
+            opt.value = t; 
+            opt.innerHTML = t;
             select.appendChild(opt);
         });
     }
 
     poblarTallas('talla_jersey');
     poblarTallas('talla_rompevientos');
-    poblarTallas('talla_chaleco');
 
     function actualizarTallas() {
         const p = document.getElementById('paqueteSelect').value;
         document.getElementById('seccionJersey').style.display = 'none';
         document.getElementById('seccionRompevientos').style.display = 'none';
-        document.getElementById('seccionChaleco').style.display = 'none';
 
         if(p === "1" || p === "4") {
             document.getElementById('seccionJersey').style.display = 'block';
@@ -170,13 +194,15 @@
         }
     }
 
-    // Convertidor de imágenes a texto (Base64) para enviar a Google Drive
-    const toBase64 = file => new Promise((resolve) => {
-        if (!file) { resolve(""); return; }
+    const fileToBase64 = file => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => resolve("");
+        reader.onload = () => resolve({
+            base64: reader.result,
+            type: file.type,
+            name: file.name
+        });
+        reader.onerror = error => reject(error);
     });
 
     const form = document.getElementById('registroForm');
@@ -184,39 +210,48 @@
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
         btn.disabled = true;
-        btn.innerText = "SUBIENDO REGISTRO Y FOTOS...";
+        btn.innerText = "SUBIENDO IMÁGENES Y GUARDANDO...";
 
         try {
-            const formData = new FormData(form);
-            const data = new URLSearchParams();
+            const fotoFbFile = document.getElementById('foto_fb').files[0];
+            const comprobanteFile = document.getElementById('comprobante').files[0];
 
-            // 1. Añadir textos
-            for (const pair of formData.entries()) {
-                if (!(pair[1] instanceof File)) {
-                    data.append(pair[0], pair[1]);
-                }
-            }
+            let fotoFbData = null;
+            let comprobanteData = null;
 
-            // 2. Procesar imágenes a Base64 y adjuntarlas
-            const img1 = document.getElementById('f_fb').files[0];
-            const img2 = document.getElementById('f_pago').files[0];
+            if (fotoFbFile) fotoFbData = await fileToBase64(fotoFbFile);
+            if (comprobanteFile) comprobanteData = await fileToBase64(comprobanteFile);
 
-            data.append("foto_fb_base64", img1 ? await toBase64(img1) : "");
-            data.append("comprobante_base64", img2 ? await toBase64(img2) : "");
+            const payload = {
+                nombre: form.nombre.value,
+                grupo_ciclista: form.grupo_ciclista.value,
+                procedencia: form.procedencia.value,
+                whatsapp: form.whatsapp.value,
+                paquete: form.paquete.value,
+                talla_jersey: form.talla_jersey ? form.talla_jersey.value : "N/A",
+                talla_rompevientos: form.talla_rompevientos ? form.talla_rompevientos.value : "N/A",
+                talla_chaleco: "N/A",
+                foto_fb: fotoFbData,
+                comprobante: comprobanteData
+            };
 
-            // 3. Envío al script de Google
-            await fetch(scriptURL, { 
+            const response = await fetch(scriptURL, { 
                 method: 'POST', 
-                mode: 'no-cors', 
-                body: data 
+                body: JSON.stringify(payload)
             });
 
-            alert("¡REGISTRO EXITOSO!\nDatos y fotografías guardados correctamente.");
-            form.reset();
-            actualizarTallas();
+            const result = await response.json();
 
+            if (result.result === "success") {
+                alert("¡REGISTRO EXITOSO!\nTus datos e imágenes se guardaron correctamente.");
+                form.reset();
+                actualizarTallas();
+            } else {
+                alert("Error al guardar los datos: " + (result.error || "Inténtalo de nuevo."));
+            }
         } catch (error) {
-            alert("Error de conexión al subir imágenes. Intenta usar imágenes menos pesadas.");
+            alert("Error al enviar el registro. Verifica tu conexión a internet.");
+            console.error(error);
         } finally {
             btn.disabled = false;
             btn.innerText = "FINALIZAR REGISTRO";
@@ -225,5 +260,3 @@
 </script>
 </body>
 </html>
-
-  
