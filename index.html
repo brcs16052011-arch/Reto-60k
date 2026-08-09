@@ -9,7 +9,7 @@
             margin: 0; 
             padding: 20px; 
             font-family: 'Segoe UI', sans-serif; 
-            background: #2b080c; /* Guinda muy oscuro para el fondo */
+            background: #2b080c; 
             color: white; 
             display: flex; 
             justify-content: center; 
@@ -17,15 +17,15 @@
         .container { 
             max-width: 500px; 
             width: 100%; 
-            background: #4a0e17; /* Guinda principal para la tarjeta */
+            background: #4a0e17; 
             padding: 25px; 
             border-radius: 15px; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
-            border: 1px solid #d4af37; /* Borde dorado tenue */
+            border: 1px solid #d4af37; 
         }
         h2 { 
             text-align: center; 
-            color: #d4af37; /* Dorado metálico */
+            color: #d4af37; 
             text-transform: uppercase; 
             margin-bottom: 20px; 
         }
@@ -34,14 +34,14 @@
             margin-top: 15px; 
             margin-bottom: 5px; 
             font-weight: bold; 
-            color: #f3e5ab; /* Dorado claro */
+            color: #f3e5ab; 
         }
         input, select { 
             width: 100%; 
             padding: 12px; 
             border-radius: 8px; 
-            border: 1px solid #d4af37; /* Borde dorado */
-            background: #2b080c; /* Fondo oscuro interno */
+            border: 1px solid #d4af37; 
+            background: #2b080c; 
             color: white; 
             box-sizing: border-box; 
             margin-bottom: 5px; 
@@ -57,13 +57,13 @@
             border-radius: 8px; 
             margin-top: 10px; 
             display: none; 
-            border-left: 4px solid #d4af37; /* Acento dorado lateral */
+            border-left: 4px solid #d4af37; 
         }
         button { 
             width: 100%; 
             padding: 18px; 
-            background: #d4af37; /* Dorado principal */
-            color: #2b080c; /* Texto guinda */
+            background: #d4af37; 
+            color: #2b080c; 
             border: none; 
             border-radius: 8px; 
             font-weight: bold; 
@@ -73,7 +73,7 @@
             transition: 0.3s; 
         }
         button:hover { 
-            background: #ffd700; /* Dorado brillante */
+            background: #ffd700; 
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
         }
         button:disabled { 
@@ -126,17 +126,16 @@
         </div>
 
         <label>Foto para FB</label>
-        <input type="file" name="foto_fb" accept="image/*" required>
+        <input type="file" id="f_fb" name="foto_fb" accept="image/*" required>
 
         <label>Comprobante de Pago</label>
-        <input type="file" name="comprobante" accept="image/*" required>
+        <input type="file" id="f_pago" name="comprobante" accept="image/*" required>
 
         <button type="submit" id="btnEnviar">FINALIZAR REGISTRO</button>
     </form>
 </div>
 
 <script>
-    // URL Actualizada y autorizada
     const scriptURL = 'https://script.google.com/macros/s/AKfycbydqWl7jhtVNYaOQwNUyG0Pa91P2KbOAK8GUeI3gVWoC--6zYFjEg7CmlyooggWq6gq-w/exec';
     
     const tallas = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"];
@@ -171,42 +170,60 @@
         }
     }
 
+    // Convertidor de imágenes a texto (Base64) para enviar a Google Drive
+    const toBase64 = file => new Promise((resolve) => {
+        if (!file) { resolve(""); return; }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => resolve("");
+    });
+
     const form = document.getElementById('registroForm');
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
         btn.disabled = true;
-        btn.innerText = "REGISTRANDO...";
+        btn.innerText = "SUBIENDO REGISTRO Y FOTOS...";
 
-        // Creamos los parámetros para el envío de texto
-        const formData = new FormData(form);
-        const data = new URLSearchParams();
-        
-        // Solo enviamos los textos (ignora los archivos para que no pese)
-        for (const pair of formData) {
-            if (!(pair[1] instanceof File)) {
-                data.append(pair[0], pair[1]);
+        try {
+            const formData = new FormData(form);
+            const data = new URLSearchParams();
+
+            // 1. Añadir textos
+            for (const pair of formData.entries()) {
+                if (!(pair[1] instanceof File)) {
+                    data.append(pair[0], pair[1]);
+                }
             }
-        }
 
-        fetch(scriptURL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: data 
-        })
-        .then(() => {
-            alert("¡REGISTRO EXITOSO!.");
+            // 2. Procesar imágenes a Base64 y adjuntarlas
+            const img1 = document.getElementById('f_fb').files[0];
+            const img2 = document.getElementById('f_pago').files[0];
+
+            data.append("foto_fb_base64", img1 ? await toBase64(img1) : "");
+            data.append("comprobante_base64", img2 ? await toBase64(img2) : "");
+
+            // 3. Envío al script de Google
+            await fetch(scriptURL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: data 
+            });
+
+            alert("¡REGISTRO EXITOSO!\nDatos y fotografías guardados correctamente.");
             form.reset();
             actualizarTallas();
+
+        } catch (error) {
+            alert("Error de conexión al subir imágenes. Intenta usar imágenes menos pesadas.");
+        } finally {
             btn.disabled = false;
             btn.innerText = "FINALIZAR REGISTRO";
-        })
-        .catch(error => {
-            alert("Error de conexión");
-            btn.disabled = false;
-        });
+        }
     });
 </script>
 </body>
 </html>
 
+  
